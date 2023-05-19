@@ -1,0 +1,12 @@
+#chat-bot__Container {
+  font-family: "Inter", sans-serif;
+}
+
+.chat-bot__scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.chat-bot__scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
