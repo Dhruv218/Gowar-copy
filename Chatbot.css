@@ -2,11 +2,33 @@
   font-family: "Inter", sans-serif;
 }
 
-.chat-bot__scrollbar-hide::-webkit-scrollbar {
+/* .chat-bot__scrollbar-hide::-webkit-scrollbar {
   display: none;
-}
+} */
 
-.chat-bot__scrollbar-hide {
+/* .chat-bot__scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+} */
+#chatMessages::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and newer versions of Edge */
+}
+#chatMessages {
+  overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+#messageContainer::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and newer versions of Edge */
+}
+#messageContainer {
+  overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media only screen and (max-width: 640px) {
+  /* #chatbot_full {
+    scale: 15;
+  } */
 }
