@@ -41,6 +41,7 @@ function handleNo(e) {
       <p class="text-[#B4B4B4] text-sm">Support executive will be assisting 
       you in \n
       <span id="chatbot_timer" class="text-[#C73838]">\n2 Minutes</span>
+      
       </p>
     </div>
   </div>
@@ -51,10 +52,10 @@ function handleNo(e) {
     const duration = 5;
     let timer = duration;
     const countdownInterval = setInterval(() => {
-      const minutes = Math.floor(timer / 60).toString().padStart(2, '0');
-      const seconds = (timer % 60).toString().padStart(2, '0');
-      const countdownText = `${minutes}:${seconds}`;
-      countdownElement.textContent = countdownText;
+      // const minutes = Math.floor(timer / 60).toString().padStart(2, '0');
+      // const seconds = (timer % 60).toString().padStart(2, '0');
+      // const countdownText = `${minutes}:${seconds}`;
+      // countdownElement.textContent = countdownText;
       timer--;
 
 
