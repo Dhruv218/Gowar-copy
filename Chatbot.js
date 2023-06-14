@@ -2,7 +2,7 @@
 // const wss = new WebSocket("wss://s9170.blr1.piesocket.com/v3/1?api_key=wBcoKk96vynh1Z6xI7DNGGjkrsLAKu4agE5ko9Zl&notify_self=1")
 
 // let wss = new WebSocket("ws://13.126.248.19/ws/chat/agent/49fae2353f3146558e3e9448489ab601/")
-var wss = new WebSocket("wss://13.126.248.19/ws/chat/49fae2353f3146558e3e9448489ab601/")
+var wss = new WebSocket("ws://13.126.248.19/ws/chat/49fae2353f3146558e3e9448489ab601/")
 // const wss = new WebSocket("ws://13.126.248.19/ws/chat/b6195e54416345f2b8ffbd46dca35c13/")
 
 let noCount = 0;
@@ -12,7 +12,7 @@ function handleNo(e) {
   noCount++;
   console.log("no count: " + noCount);
   if (noCount === 3) {
-    wss = new WebSocket("wss://13.126.248.19/ws/chat/agent/49fae2353f3146558e3e9448489ab601/")
+    wss = new WebSocket("ws://13.126.248.19/ws/chat/agent/49fae2353f3146558e3e9448489ab601/")
 
     const helpfulElements = document.getElementsByClassName("chatbot-helpful");
 
