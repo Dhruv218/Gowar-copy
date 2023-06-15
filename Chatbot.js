@@ -12,7 +12,15 @@ function handleNo(e) {
   noCount++;
   console.log("no count: " + noCount);
   if (noCount === 3) {
+    wss.close();
     wss = new WebSocket("ws://13.126.248.19/ws/chat/agent/49fae2353f3146558e3e9448489ab601/")
+    wss.addEventListener("open", ws => {
+      console.log("websocket connected");
+      // wss.send("Hello")
+    })
+    wss.addEventListener("message", (data) => {
+      attatchBotMessage(data)
+    })
 
     const helpfulElements = document.getElementsByClassName("chatbot-helpful");
 
@@ -85,13 +93,16 @@ function handleNo(e) {
 
 wss.addEventListener("open", ws => {
   console.log("websocket connected");
-  // wss.send("Hello")
 })
 
 
 const messages = document.getElementById("chatMessages");
 
 wss.addEventListener("message", (data) => {
+  attatchBotMessage(data)
+})
+
+function attatchBotMessage(data) {
   // console.log(data.data);
   console.log("inside message event");
   let botMessageText = JSON.parse(data.data)
@@ -136,21 +147,13 @@ wss.addEventListener("message", (data) => {
   `;
     messages.appendChild(botMessage);
   }
-
-
-
-})
+}
 
 
 function sendMessage(event) {
   event.preventDefault();
   const input = event.target.elements.message;
   const newMessage = input.value.trim();
-
-  // console.log(newMessage)
-  // fetch(`ws://13.126.248.19:8000/chatbot?user_input=${newMessage}`)
-  //   .then(res => res.json())
-  //   .then(data => console.log(data));
 
   wss.send(JSON.stringify({
     "message": newMessage
