@@ -2,16 +2,8 @@
   font-family: "Inter", sans-serif;
 }
 
-/* .chat-bot__scrollbar-hide::-webkit-scrollbar {
-  display: none;
-} */
-
-/* .chat-bot__scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-} */
 #chatMessages::-webkit-scrollbar {
-  display: none; /* for Chrome, Safari, and newer versions of Edge */
+  display: none;
 }
 #chatMessages {
   overflow: auto;
@@ -19,16 +11,10 @@
   scrollbar-width: none;
 }
 #messageContainer::-webkit-scrollbar {
-  display: none; /* for Chrome, Safari, and newer versions of Edge */
+  display: none;
 }
 #messageContainer {
   overflow: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-@media only screen and (max-width: 640px) {
-  /* #chatbot_full {
-    scale: 15;
-  } */
 }
