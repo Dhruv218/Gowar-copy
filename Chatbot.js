@@ -1,12 +1,12 @@
+console.log(keywords)
 var wss = new WebSocket("wss://test.gowarranty.in/ws/chat/49fae2353f3146558e3e9448489ab601/")
 
 let noCount = 0;
 var agentChat = false;
 
 function handleNo(e) {
-  noCount++;
-  console.log("no count: " + noCount);
-  if (noCount === 3) {
+
+  if (agentChat) {
     wss.close();
     wss = new WebSocket("wss://test.gowarranty.in/ws/chat/agent/49fae2353f3146558e3e9448489ab601/")
     wss.addEventListener("open", ws => {
@@ -68,6 +68,14 @@ function handleNo(e) {
   }
 }
 
+function checkMessage(userInput) {
+  const lowerUserInput = userInput.toLowerCase();
+  const foundKeyword = keywords.find(keyword =>
+    lowerUserInput.includes(keyword.toLowerCase())
+  );
+
+  return !!foundKeyword;
+}
 
 
 wss.addEventListener("open", ws => {
@@ -77,9 +85,9 @@ wss.addEventListener("open", ws => {
 
 const messages = document.getElementById("chatMessages");
 
-wss.addEventListener("message", (data) => {
-  attatchBotMessage(data)
-})
+// wss.addEventListener("message", (data) => {
+//   attatchBotMessage(data)
+// })
 
 function attatchBotMessage(data) {
   console.log("inside message event");
@@ -87,14 +95,15 @@ function attatchBotMessage(data) {
   console.log(botMessageText)
   const botMessage = document.createElement("div");
   botMessage.className = "flex flex-col mb-2 items-start";
-  if (agentChat) {
+  if (!agentChat) {
     botMessage.innerHTML = `
           <div class="flex flex-col items-end justify-center">
             <div class="flex items-end justify-center">
             <img src="./Assets/botImage.png" class="w-5 h-5 rounded-full mr-2 block" alt="Bot" />
             <div class="text-left pe-9">
               <div class="p-2 bg-gray-100 w-fit text-left rounded-lg">
-                ${botMessageText.message}
+                // ${botMessageText.message}
+                <p>message from bot</p>
               </div>
             </div>
             </div>
@@ -109,10 +118,11 @@ function attatchBotMessage(data) {
     <img src="./Assets/botImage.png" class="w-5 h-5 rounded-full mr-2 block" alt="Bot" />
     <div class="text-left pe-9">
       <div class="p-2 bg-gray-100 w-fit text-left rounded-lg">
-        ${botMessageText.message}
+        // ${botMessageText.message}
+        <p>message from bot</p>
       </div>
       <div class="p-2 bg-gray-100 w-fit text-left rounded-lg mt-2">
-        Was this answer helpful?
+        Do you want to chat with Customer Support?
       </div>
     </div>
     </div>
@@ -132,6 +142,13 @@ function sendMessage(event) {
   event.preventDefault();
   const input = event.target.elements.message;
   const newMessage = input.value.trim();
+
+  if (checkMessage(newMessage)) {
+    agentChat = true;
+  }
+  else {
+    agentChat = false;
+  }
 
   wss.send(JSON.stringify({
     "message": newMessage
@@ -175,6 +192,11 @@ function sendMessage(event) {
     console.log(messages);
     setTimeout(scrollToBottom, 500);
   }
+  // For Testing Keyword Response
+  attatchBotMessage({
+    "data": "{\"message\":\"Hello, I am the bot!\"}"
+  }
+  )
 }
 
 function scrollToBottom() {
