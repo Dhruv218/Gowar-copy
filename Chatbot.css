@@ -2,11 +2,19 @@
   font-family: "Inter", sans-serif;
 }
 
-.chat-bot__scrollbar-hide::-webkit-scrollbar {
+#chatMessages::-webkit-scrollbar {
   display: none;
 }
-
-.chat-bot__scrollbar-hide {
+#chatMessages {
+  overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+#messageContainer::-webkit-scrollbar {
+  display: none;
+}
+#messageContainer {
+  overflow: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
