@@ -1,35 +1,27 @@
-var wss = new WebSocket(
-  "wss://test.gowarranty.in/ws/chat/49fae2353f3146558e3e9448489ab601/"
-);
-
-let noCount = 0;
 var agentChat = false;
+var showSupportOption = false;
 var generatingMessage = true;
+var chatRoomID;
+var wss;
 
 function handleYes(e) {
-  if (agentChat) {
-    wss.close();
-    wss = new WebSocket(
-      "wss://test.gowarranty.in/ws/chat/agent/49fae2353f3146558e3e9448489ab601/"
-    );
-    wss.addEventListener("open", (ws) => {
-      console.log("Agent websocket connected");
-    });
-    wss.addEventListener("message", (data) => {
-      attatchBotMessage(data);
-    });
 
-    const helpfulElements = document.getElementsByClassName("chatbot-helpful");
+  showSupportOption = false;
 
-    Array.from(helpfulElements).forEach((helpfulElement) => {
-      helpfulElement.remove();
-    });
-    agentChat = true;
-    const messages = document.getElementById("chatMessages");
+  fetch(`http://localhost:8000/chat/join-agent/?room_name=${chatRoomID}`)
 
-    const supportCountdown = document.createElement("div");
-    supportCountdown.className = "flex flex-col mb-2 items-end";
-    supportCountdown.innerHTML = `
+
+  const helpfulElements = document.getElementsByClassName("chatbot-helpful");
+
+  Array.from(helpfulElements).forEach((helpfulElement) => {
+    helpfulElement.remove();
+  });
+  agentChat = true
+  const messages = document.getElementById("chatMessages");
+
+  const supportCountdown = document.createElement("div");
+  supportCountdown.className = "flex flex-col mb-2 items-end";
+  supportCountdown.innerHTML = `
   <div class="flex items-end justify-center  mt-2">
     <div class="p-2 bg-[#212334] text-center  rounded-lg">
       <p class="text-[#B4B4B4] text-sm">Support executive will be assisting 
@@ -40,21 +32,21 @@ function handleYes(e) {
     </div>
   </div>
   `;
-    messages.appendChild(supportCountdown);
+  messages.appendChild(supportCountdown);
 
-    const countdownElement = document.querySelector("#chatbot_timer");
-    const duration = 5;
-    let timer = duration;
-    const countdownInterval = setInterval(() => {
-      timer--;
+  const countdownElement = document.querySelector("#chatbot_timer");
+  const duration = 5;
+  let timer = duration;
+  const countdownInterval = setInterval(() => {
+    timer--;
 
-      if (timer < 0) {
-        clearInterval(countdownInterval);
+    if (timer < 0) {
+      clearInterval(countdownInterval);
 
-        countdownElement.parentNode.parentNode.parentNode.parentNode.remove();
-        const customerSupport = document.createElement("div");
-        customerSupport.className = "flex flex-col mb-2 items-end";
-        customerSupport.innerHTML = `
+      countdownElement.parentNode.parentNode.parentNode.parentNode.remove();
+      const customerSupport = document.createElement("div");
+      customerSupport.className = "flex flex-col mb-2 items-end";
+      customerSupport.innerHTML = `
           <div class="flex items-end justify-center w-full">
             <div class="p-2 bg-[#212334] text-center rounded-lg w-full">
               <p class="text-[#B4B4B4] text-sm">Support executive is on-line to help you
@@ -62,10 +54,9 @@ function handleYes(e) {
             </div>
           </div>
           `;
-        messages.appendChild(customerSupport);
-      }
-    }, 100);
-  }
+      messages.appendChild(customerSupport);
+    }
+  }, 100);
 }
 
 function checkMessage(userInput) {
@@ -77,15 +68,11 @@ function checkMessage(userInput) {
   return !!foundKeyword;
 }
 
-wss.addEventListener("open", (ws) => {
-  console.log("websocket connected");
-});
+
 
 const messages = document.getElementById("chatMessages");
 
-wss.addEventListener("message", (data) => {
-  attatchBotMessage(data);
-});
+
 
 function addTyping() {
   const messages = document.getElementById("chatMessages");
@@ -125,16 +112,21 @@ function attatchBotMessage(data) {
   console.log(botMessageText);
   const botMessage = document.createElement("div");
   botMessage.className = "flex flex-col mb-2 items-start";
-  if (!agentChat) {
+  let botPlaceHolder = botMessageText.message;
+  console.log(botPlaceHolder)
+  if (typeof botPlaceHolder.text !== "undefined") {
+    botPlaceHolder = botPlaceHolder.text;
+  }
+  if (!showSupportOption || agentChat) {
     botMessage.innerHTML = `
           <div class="flex flex-col items-end justify-center">
             <div class="flex items-end justify-center">
             <img src="./Assets/botImage.png" class="w-5 h-5 rounded-full mr-2 block" alt="Bot" />
             <div class="text-left pe-9">
               <div class="p-2 bg-gray-100 w-fit text-left rounded-lg rounded-bl-none">
-                <p>${botMessageText.message}</p>
+                <p>${botPlaceHolder}</p>
               </div>
-              <p class="text-white text-[10px] mt-[7.5px]">message from bot</p>
+              <p class="text-white text-[10px] mt-[7.5px]">message from ${botMessageText.sender === "Bot" ? "Bot" : "Agent"}</p>
             </div>
             </div>
             </div>
@@ -149,7 +141,7 @@ function attatchBotMessage(data) {
       <div class="p-2 bg-gray-100 w-fit text-left rounded-lg">
         <p>${botMessageText.message}</p>
       </div>
-      <p class="text-white text-[10px] mt-[7.5px]">message from bot</p>
+      <p class="text-white text-[10px] mt-[7.5px]">message from  ${botMessageText.sender === "Bot" ? "Bot" : "Agent"}</p>
       <div class="p-2 bg-gray-100 w-fit text-left rounded-lg rounded-bl-none mt-2">
         Do you want to chat with Customer Support?
       </div>
@@ -172,16 +164,17 @@ function sendMessage(event) {
   const newMessage = input.value.trim();
 
   if (checkMessage(newMessage)) {
-    agentChat = true;
+    showSupportOption = true;
   } else {
-    agentChat = false;
+    showSupportOption = false;
   }
-
   wss.send(
     JSON.stringify({
       message: newMessage,
+      sender: "visitor",
     })
   );
+
   console.log("send message called");
   if (newMessage !== "") {
     const timestamp = new Date().toLocaleTimeString([], {
@@ -189,7 +182,7 @@ function sendMessage(event) {
       minute: "numeric",
     });
 
-    if (messages.childElementCount > 1) {
+    if (messages.childElementCount > 2) {
       messageContainer = document.getElementById("messageContainer");
       messageContainer.classList.remove("flex");
     }
@@ -199,8 +192,10 @@ function sendMessage(event) {
     userMessage.innerHTML = `
   <div class="flex items-end justify-center">
     <img src="./Assets/botImage.png" class="w-5 h-5 rounded-full mr-2 hidden" alt="bot" />
-    <div class="p-2 bg-cyan-500 text-right text-white rounded-lg  rounded-br-none w-fit">
-      ${newMessage}
+    <div class="ps-9">
+    <div class="p-2 bg-cyan-500 text-right text-white rounded-lg rounded-br-none w-auto ml-5">
+      <p>${newMessage}</p>
+    </div>
     </div>
   </div>
   <div class="text-xs mt-2 text-gray-400 ml-8 text-right">
@@ -220,10 +215,6 @@ function sendMessage(event) {
     console.log(messages);
     setTimeout(scrollToBottom, 500);
   }
-  // For Testing Keyword Response
-  //   attatchBotMessage({
-  //     data: '{"message":"Hello, I am the bot!"}',
-  //   });
 }
 
 function scrollToBottom() {
@@ -232,6 +223,26 @@ function scrollToBottom() {
 }
 
 function toggleChatbot() {
+
+  fetch('http://localhost:8000/chat/room/')
+    .then(res => res.json())
+    .then(data => {
+      chatRoomID = data.room;
+      console.log(chatRoomID)
+      if (chatRoomID) {
+        wss = new WebSocket(
+          `ws://localhost:8000/ws/chat/${chatRoomID}/`
+        );
+        wss.addEventListener("open", (ws) => {
+          console.log("websocket connected");
+        });
+        wss.addEventListener("message", (data) => {
+          attatchBotMessage(data);
+        });
+      }
+    })
+
+
   const chatbotContainer = document.getElementById("chat-bot__Container");
   chatbotContainer.classList.toggle("opacity-0");
   chatbotContainer.classList.toggle("opacity-100");
