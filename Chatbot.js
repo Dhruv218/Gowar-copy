@@ -8,7 +8,7 @@ function handleYes(e) {
 
   showSupportOption = false;
 
-  fetch(`http://localhost:8000/chat/join-agent/?room_name=${chatRoomID}`)
+  fetch(`https://test.gowarranty.in/chat/join-agent/?room_name=${chatRoomID}`)
 
 
   const helpfulElements = document.getElementsByClassName("chatbot-helpful");
@@ -224,7 +224,7 @@ function scrollToBottom() {
 
 function toggleChatbot() {
 
-  fetch('http://localhost:8000/chat/room/')
+  fetch('https://test.gowarranty.in/chat/room/')
     .then(res => res.json())
     .then(data => {
       chatRoomID = data.room;
