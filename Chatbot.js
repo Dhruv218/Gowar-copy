@@ -3,12 +3,25 @@ var showSupportOption = false;
 var generatingMessage = true;
 var chatRoomID;
 var wss;
+var hostURL = "https://test.gowarranty.in"
+// var hostURL = "http://localhost:8000"
+
+var hostURLWebSocket = "wss://test.gowarranty.in"
+// var hostURLWebSocket = "ws://localhost:8000"
+
+fetch(`${hostURL}/chat/room/`)
+  .then(res => res.json())
+  .then(data => {
+    console.log(data);
+    chatRoomID = data.room;
+    attatchBotMessage({ "data": '{ "message": "Hello! I am Wall-E powered by ChatGPT. How can I help you?", "sender": "bot" }' })
+  })
+connectWebSocket();
 
 function handleYes(e) {
 
   showSupportOption = false;
-
-  fetch(`https://test.gowarranty.in/chat/join-agent/?room_name=${chatRoomID}`)
+  fetch(`${hostURL}/chat/join-agent-by-choice/?room_name=${chatRoomID}`)
 
 
   const helpfulElements = document.getElementsByClassName("chatbot-helpful");
@@ -20,10 +33,10 @@ function handleYes(e) {
   const messages = document.getElementById("chatMessages");
 
   const supportCountdown = document.createElement("div");
-  supportCountdown.className = "flex flex-col mb-2 items-end";
+  supportCountdown.className = "flex flex-col mb-2 items-end w-full align-middle justify-center";
   supportCountdown.innerHTML = `
-  <div class="flex items-end justify-center  mt-2">
-    <div class="p-2 bg-[#212334] text-center  rounded-lg">
+  <div class="flex items-end justify-center mt-2 w-full">
+    <div class="p-2 bg-[#212334] text-center rounded-lg w-[14.5rem]" id="support_init">
       <p class="text-[#B4B4B4] text-sm">Support executive will be assisting 
       you in \n
       <span id="chatbot_timer" class="text-[#C73838]">\n2 Minutes</span>
@@ -35,8 +48,8 @@ function handleYes(e) {
   messages.appendChild(supportCountdown);
 
   const countdownElement = document.querySelector("#chatbot_timer");
-  const duration = 5;
-  let timer = duration;
+  const duration = 2000;
+  var timer = duration;
   const countdownInterval = setInterval(() => {
     timer--;
 
@@ -47,7 +60,7 @@ function handleYes(e) {
       const customerSupport = document.createElement("div");
       customerSupport.className = "flex flex-col mb-2 items-end";
       customerSupport.innerHTML = `
-          <div class="flex items-end justify-center w-full">
+          <div class="flex items-end justify-center w-[12.5rem]">
             <div class="p-2 bg-[#212334] text-center rounded-lg w-full">
               <p class="text-[#B4B4B4] text-sm">Support executive is on-line to help you
               </p>
@@ -67,7 +80,6 @@ function checkMessage(userInput) {
 
   return !!foundKeyword;
 }
-
 
 
 const messages = document.getElementById("chatMessages");
@@ -109,7 +121,7 @@ function attatchBotMessage(data) {
   console.log("inside message event");
   removeTyping();
   let botMessageText = JSON.parse(data.data);
-  console.log(botMessageText);
+  console.log(data);
   const botMessage = document.createElement("div");
   botMessage.className = "flex flex-col mb-2 items-start";
   let botPlaceHolder = botMessageText.message;
@@ -126,7 +138,7 @@ function attatchBotMessage(data) {
               <div class="p-2 bg-gray-100 w-fit text-left rounded-lg rounded-bl-none">
                 <p>${botPlaceHolder}</p>
               </div>
-              <p class="text-white text-[10px] mt-[7.5px]">message from ${botMessageText.sender === "Bot" ? "Bot" : "Agent"}</p>
+              <p class="text-white text-[10px] mt-[7.5px]">message from ${botMessageText.sender === "bot" ? "Bot" : "Agent"}</p>
             </div>
             </div>
             </div>
@@ -141,7 +153,7 @@ function attatchBotMessage(data) {
       <div class="p-2 bg-gray-100 w-fit text-left rounded-lg">
         <p>${botMessageText.message}</p>
       </div>
-      <p class="text-white text-[10px] mt-[7.5px]">message from  ${botMessageText.sender === "Bot" ? "Bot" : "Agent"}</p>
+      <p class="text-white text-[10px] mt-[7.5px]">message from  ${botMessageText.sender === "bot" ? "Bot" : "Agent"}</p>
       <div class="p-2 bg-gray-100 w-fit text-left rounded-lg rounded-bl-none mt-2">
         Do you want to chat with Customer Support?
       </div>
@@ -156,6 +168,7 @@ function attatchBotMessage(data) {
   `;
     messages.appendChild(botMessage);
   }
+  setTimeout(scrollToBottom, 500);
 }
 
 function sendMessage(event) {
@@ -168,12 +181,15 @@ function sendMessage(event) {
   } else {
     showSupportOption = false;
   }
-  wss.send(
-    JSON.stringify({
-      message: newMessage,
-      sender: "visitor",
-    })
-  );
+  if (wss && wss.readyState === WebSocket.OPEN) {
+    wss.send(
+      JSON.stringify({
+        message: newMessage,
+        sender: "visitor",
+        pk: 0,
+      })
+    );
+  }
 
   console.log("send message called");
   if (newMessage !== "") {
@@ -222,27 +238,46 @@ function scrollToBottom() {
   scrollToBottomRef.scrollIntoView({ behavior: "smooth", block: "end" });
 }
 
+function connectWebSocket() {
+  console.log("Connecting");
+
+  wss = new WebSocket(
+    `${hostURLWebSocket}/ws/chat/${chatRoomID}/`
+  );
+
+  wss.addEventListener("open", () => {
+    console.log("WebSocket connected");
+  });
+
+  wss.addEventListener("message", (data) => {
+    timer = 0;
+    attatchBotMessage(data);
+  });
+
+  wss.addEventListener("close", () => {
+    connectWebSocket()
+  });
+}
+
+
 function toggleChatbot() {
-
-  fetch('https://test.gowarranty.in/chat/room/')
-    .then(res => res.json())
-    .then(data => {
-      chatRoomID = data.room;
-      console.log(chatRoomID)
-      if (chatRoomID) {
-        wss = new WebSocket(
-          `ws://localhost:8000/ws/chat/${chatRoomID}/`
-        );
-        wss.addEventListener("open", (ws) => {
-          console.log("websocket connected");
-        });
-        wss.addEventListener("message", (data) => {
-          attatchBotMessage(data);
-        });
-      }
-    })
+  // Function to establish a WebSocket connection
+  if (!wss || wss.readyState === WebSocket.CLOSED) {
+    // WebSocket is not defined or closed, establish a new connection
+    removeTyping()
+    if (!chatRoomID) {
+      fetch(`${hostURL}/chat/room/`)
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+          chatRoomID = data.room;
+        })
+    }
+    connectWebSocket();
+  };
 
 
+  // Rest of your code for toggling the chatbot container
   const chatbotContainer = document.getElementById("chat-bot__Container");
   chatbotContainer.classList.toggle("opacity-0");
   chatbotContainer.classList.toggle("opacity-100");

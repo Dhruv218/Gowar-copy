@@ -1,74 +1,56 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="Chatbot.css" />
-  </head>
 
-  <body>
-    <div class="">
-      <div class="absolute bottom-7 left-9">
+<head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="Chatbot.css" />
+</head>
+
+<body>
+  <div class="">
+    <div class="absolute bottom-7 left-9">
+      <div id="chat-bot__Container"
+        class="absolute -z-10 lg:bottom-24 min-w-full min-h-full lg:left-40 opacity-0 pointer-events-none md:left-64 md:bottom-64 lg:scale-100 md:scale-[1.7]">
+        <div class="inset-0" onclick="closeChatbot()"></div>
         <div
-          id="chat-bot__Container"
-          class="absolute -z-10 lg:bottom-24 min-w-full min-h-full lg:left-40 opacity-0 pointer-events-none md:left-64 md:bottom-64 lg:scale-100 md:scale-[1.7]">
-          <div class="inset-0" onclick="closeChatbot()"></div>
-          <div
-            class="relative bg-[#161725] w-[360px] h-[460px] border-2 border-orange-500 rounded-2xl shadow-xl transform transition-all duration-300 overflow-hidden">
-            <div class="flex h-full flex-col justify-end">
-              <div
-                class="px-4 z-30 py-4 flex items-center gap-x-4 border-b border-slate-700 shadow-black shadow-md">
-                <img
-                  class="inline-block h-10 w-10 rounded-full ring-2 ring-white"
-                  src="./Assets/botImage.png"
-                  alt="Bot" />
-                <div
-                  class="w-3 h-3 absolute bg-green-600 rounded-full border-2 left-12 top-12"></div>
-                <div class="text-white">
-                  <h3 class="font-bold text-lg">Wall-e Bot</h3>
-                  <p class="text-xs">ONLINE</p>
-                </div>
+          class="relative bg-[#161725] w-[360px] h-[460px] border-2 border-orange-500 rounded-2xl shadow-xl transform transition-all duration-300 overflow-hidden">
+          <div class="flex h-full flex-col justify-end">
+            <div class="px-4 z-30 py-4 flex items-center gap-x-4 border-b border-slate-700 shadow-black shadow-md">
+              <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white" src="./Assets/botImage.png"
+                alt="Bot" />
+              <div class="w-3 h-3 absolute bg-green-600 rounded-full border-2 left-12 top-12"></div>
+              <div class="text-white">
+                <h3 class="font-bold text-lg">Wall-e Bot</h3>
+                <p class="text-xs">ONLINE</p>
               </div>
-              <div
-                class="overflow-y-auto h-full flex justify-end flex-col px-4 chat-bot__scrollbar-hide"
-                id="messageContainer">
-                <div id="chatMessages"></div>
-                <div id="scrollToBottomRef"></div>
-              </div>
-              <form
-                class="flex items-center py-2 px-4 justify-between w-full border-t border-gray-400"
-                onsubmit="sendMessage(event)">
-                <input
-                  type="text"
-                  class="flex-grow h-12 mb-2 mt-2 mr-5 text-white bg-[#161725] focus:outline-none"
-                  placeholder="Write a message"
-                  name="message" />
-                <button
-                  type="submit"
-                  class="hover:bg-gray-800 rounded-full p-2 flex align-middle justify-center">
-                  <img class="w-5 h-5" src="./Assets/plane.png" alt="Send" />
-                </button>
-              </form>
             </div>
+            <div class="overflow-y-auto h-full flex justify-end flex-col px-4 chat-bot__scrollbar-hide"
+              id="messageContainer">
+              <div id="chatMessages"></div>
+              <div id="scrollToBottomRef"></div>
+            </div>
+            <form class="flex items-center py-2 px-4 pb-12 justify-between w-full border-t border-gray-400"
+              onsubmit="sendMessage(event)">
+              <input type="text" class="flex-grow h-12 mb-2 mt-2 mr-5 text-white bg-[#161725] focus:outline-none"
+                placeholder="Write a message" name="message" autocomplete="off" />
+              <button type="submit" class="hover:bg-gray-800 rounded-full p-2 flex align-middle justify-center">
+                <img class="w-5 h-5" src="./Assets/plane.png" alt="Send" />
+              </button>
+            </form>
           </div>
         </div>
-        <div class="fixed bottom-20 left-32 opacity-0" id="crossButton">
-          <img
-            class="w-10 z-20 shadow-md rounded-full"
-            src="./Assets/cross.png"
-            onclick="toggleChatbot()"
-            alt="Cancel" />
-        </div>
       </div>
-      <div class="absolute z-20 bottom-8 left-7" id="ModalButton">
-        <img
-          class="w-52 z-20"
-          src="./Assets/ModalButton.png"
-          onclick="toggleChatbot()"
-          alt="Open Chat" />
+      <div class="fixed bottom-20 left-32 opacity-0" id="crossButton">
+        <img class="w-10 z-20 shadow-md rounded-full" src="./Assets/cross.png" onclick="toggleChatbot()" alt="Cancel" />
       </div>
-      <div class="fixed bottom-7 left-9"></div>
     </div>
-    <script type="text/javascript" src="Keyword.js"></script>
-    <script type="text/javascript" src="Chatbot.js"></script>
-  </body>
+    <div class="absolute z-20 bottom-8 left-7" id="ModalButton">
+      <img class="w-52 z-20" src="./Assets/ModalButton.png" onclick="toggleChatbot()" alt="Open Chat" />
+    </div>
+    <div class="fixed bottom-7 left-9"></div>
+  </div>
+  <script type="text/javascript" src="Keyword.js"></script>
+  <script type="text/javascript" src="Chatbot.js"></script>
+</body>
+
 </html>
