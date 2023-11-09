@@ -34,9 +34,10 @@ function handleYes(e) {
 
   const supportCountdown = document.createElement("div");
   supportCountdown.className = "flex flex-col mb-2 items-end w-full align-middle justify-center";
+  supportCountdown.id = "support_countdown"
   supportCountdown.innerHTML = `
   <div class="flex items-end justify-center mt-2 w-full">
-    <div class="p-2 bg-[#212334] text-center rounded-lg w-[14.5rem]" id="support_init">
+    <div class="py-[10px] px-[65px] bg-[#212334] text-center rounded-2xl w-full" id="support_init">
       <p class="text-[#B4B4B4] text-sm">Support executive will be assisting 
       you in \n
       <span id="chatbot_timer" class="text-[#C73838]">\n2 Minutes</span>
@@ -57,17 +58,7 @@ function handleYes(e) {
       clearInterval(countdownInterval);
 
       countdownElement.parentNode.parentNode.parentNode.parentNode.remove();
-      const customerSupport = document.createElement("div");
-      customerSupport.className = "flex flex-col mb-2 items-end";
-      customerSupport.innerHTML = `
-          <div class="flex items-end justify-center w-[12.5rem]">
-            <div class="p-2 bg-[#212334] text-center rounded-lg w-full">
-              <p class="text-[#B4B4B4] text-sm">Support executive is on-line to help you
-              </p>
-            </div>
-          </div>
-          `;
-      messages.appendChild(customerSupport);
+
     }
   }, 100);
 }
@@ -84,6 +75,18 @@ function checkMessage(userInput) {
 
 const messages = document.getElementById("chatMessages");
 
+function handleNo() {
+  const helpfulElements = document.getElementsByClassName("chatbot-helpful");
+
+  Array.from(helpfulElements).forEach((helpfulElement) => {
+    helpfulElement.remove();
+  });
+
+  const support_init = document.getElementById("support_init");
+  support_init.remove();
+
+}
+
 
 
 function addTyping() {
@@ -96,7 +99,7 @@ function addTyping() {
     <div class="flex items-end justify-center">
       <img src="./Assets/botImage.png" class="w-5 h-5 rounded-full mr-2 block" alt="Bot" />
       <div class="text-left pe-9">
-        <div class="p-2 bg-gray-100 w-fit text-left rounded-lg  rounded-bl-none">
+        <div class="p-2 bg-gray-100 w-fit text-left rounded-2xl  rounded-bl-none">
           <div class="flex">
             <div class="w-[10px] h-[10px] bg-[#D9D9D9] rounded-full mr-1 animate-wave-1"></div>
             <div class="w-[10px] h-[10px] bg-[#D9D9D9] rounded-full mr-1 animate-wave-2"></div>
@@ -118,6 +121,31 @@ function removeTyping() {
 }
 
 function attatchBotMessage(data) {
+  const timestamp = new Date().toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "numeric",
+  });
+  const support_element = document.getElementById("support_countdown");
+
+
+  if (agentChat && support_element) {
+    support_element.remove();
+    const customerSupport = document.createElement("div");
+    customerSupport.className = "flex flex-col mb-2 items-center w-full align-middle justify-center";
+    customerSupport.innerHTML = `
+        <div class="flex items-end justify-center w-full">
+          <div class="py-[10px] px-[65px] bg-[#212334] text-center rounded-2xl w-full">
+            <p class="text-[#B4B4B4] text-sm">Support executive is on-line
+            to help you
+            </p>
+          </div>
+        </div>
+        `;
+    messages.appendChild(customerSupport);
+  }
+
+
+
   console.log("inside message event");
   removeTyping();
   let botMessageText = JSON.parse(data.data);
@@ -135,10 +163,14 @@ function attatchBotMessage(data) {
             <div class="flex items-end justify-center">
             <img src="./Assets/botImage.png" class="w-5 h-5 rounded-full mr-2 block" alt="Bot" />
             <div class="text-left pe-9">
-              <div class="p-2 bg-gray-100 w-fit text-left rounded-lg rounded-bl-none">
+              <div class="px-4 py-3 bg-gray-100 text-left rounded-2xl rounded-bl-none max-w-[250px] w-fit break-words">
                 <p>${botPlaceHolder}</p>
               </div>
-              <p class="text-white text-[10px] mt-[7.5px]">message from ${botMessageText.sender === "bot" ? "Bot" : "Agent"}</p>
+              <p class="text-white text-[10px] mt-[7.5px]">message from ${botMessageText.sender === "bot" ? "Bot" : "Agent"}
+              <span class="text-xs mt-2 text-gray-400 ml-1 text-right">
+                  ${timestamp}
+              </span>
+              </p>
             </div>
             </div>
             </div>
@@ -150,18 +182,23 @@ function attatchBotMessage(data) {
     <div class="flex items-end justify-center">
     <img src="./Assets/botImage.png" class="w-5 h-5 rounded-full mr-2 block" alt="Bot" />
     <div class="text-left pe-9">
-      <div class="p-2 bg-gray-100 w-fit text-left rounded-lg">
+      <div class="px-4 py-3  bg-gray-100 w-fit text-left rounded-2xl max-w-[250px] break-words">
         <p>${botMessageText.message}</p>
       </div>
-      <p class="text-white text-[10px] mt-[7.5px]">message from  ${botMessageText.sender === "bot" ? "Bot" : "Agent"}</p>
-      <div class="p-2 bg-gray-100 w-fit text-left rounded-lg rounded-bl-none mt-2">
+      <p class="text-white text-[10px] mt-[7.5px]">
+      message from  ${botMessageText.sender === "bot" ? "Bot" : "Agent"}
+      <span class="text-xs mt-2 text-gray-400 ml-1 text-right">
+                  ${timestamp}
+      </span>
+      </p>
+      <div class="px-4 py-3  bg-gray-100 w-fit text-left rounded-2xl rounded-bl-none mt-2" id="support_init">
         Do you want to chat with Customer Support?
       </div>
     </div>
     </div>
     <div class="block w-full ps-7 chatbot-helpful">
-        <button class="px-3 py-2 border border-[#0BB2C0] text-[#0BB2C0] w-fit text-left rounded-lg mt-2" onClick="handleYes()">Yes</button>
-        <button  class="px-3 py-2  border border-[#0BB2C0] text-[#0BB2C0] w-fit text-left rounded-lg mt-2">No</button>
+        <button class="px-3 py-2 border border-[#0BB2C0] text-[#0BB2C0] w-fit text-left rounded-2xl mt-2" onClick="handleYes()">Yes</button>
+        <button  class="px-3 py-2  border border-[#0BB2C0] text-[#0BB2C0] w-fit text-left rounded-2xl mt-2" onClick="handleNo()">No</button>
       </div>
     </div>
   
@@ -209,7 +246,7 @@ function sendMessage(event) {
   <div class="flex items-end justify-center">
     <img src="./Assets/botImage.png" class="w-5 h-5 rounded-full mr-2 hidden" alt="bot" />
     <div class="ps-9">
-    <div class="p-2 bg-cyan-500 text-right text-white rounded-lg rounded-br-none w-auto ml-5">
+    <div class="px-4 py-3 bg-cyan-500 text-right text-white rounded-2xl rounded-br-none w-auto ml-5 max-w-[250px] break-words">
       <p>${newMessage}</p>
     </div>
     </div>
