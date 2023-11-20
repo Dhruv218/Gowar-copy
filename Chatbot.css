@@ -18,3 +18,51 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+@keyframes wave-1 {
+  0% {
+    transform: translateY(0px);
+  }
+  100% {
+    transform: translateY(-4px);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+@keyframes wave-2 {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+  100% {
+    transform: translateY(4px);
+  }
+}
+
+@keyframes wave-3 {
+  0% {
+    transform: translateY(-4px);
+  }
+  100% {
+    transform: translateY(4px);
+  }
+  50% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-wave-1 {
+  animation: wave-1 1s infinite;
+}
+
+.animate-wave-2 {
+  animation: wave-2 1s infinite;
+}
+
+.animate-wave-3 {
+  animation: wave-3 1s infinite;
+}
