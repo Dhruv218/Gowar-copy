@@ -182,7 +182,7 @@ function attatchBotMessage(data) {
     <div class="flex items-end justify-center">
     <img src="./Assets/botImage.png" class="w-5 h-5 rounded-full mr-2 block" alt="Bot" />
     <div class="text-left pe-9">
-      <div class="px-4 py-3  bg-gray-100 w-fit text-left rounded-2xl max-w-[250px] break-words">
+      <div class="px-4 py-3 bg-gray-100 w-fit text-left rounded-2xl max-w-[250px] break-words">
         <p>${botMessageText.message}</p>
       </div>
       <p class="text-white text-[10px] mt-[7.5px]">
@@ -246,7 +246,7 @@ function sendMessage(event) {
   <div class="flex items-end justify-center">
     <img src="./Assets/botImage.png" class="w-5 h-5 rounded-full mr-2 hidden" alt="bot" />
     <div class="ps-9">
-    <div class="px-4 py-3 bg-cyan-500 text-right text-white rounded-2xl rounded-br-none w-auto ml-5 max-w-[250px] break-words">
+    <div class="px-4 py-3 bg-[#0fb4c1] text-right text-white rounded-2xl rounded-br-none w-auto ml-5 max-w-[250px] break-words">
       <p>${newMessage}</p>
     </div>
     </div>
