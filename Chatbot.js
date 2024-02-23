@@ -10,12 +10,18 @@ var hostURLWebSocket = "wss://test.gowarranty.in"
 // var hostURLWebSocket = "ws://localhost:8000"
 
 fetch(`${hostURL}/chat/room/`)
-  .then(res => res.json())
+  .then(res => {
+    return res.json();
+  })
   .then(data => {
     console.log(data);
     chatRoomID = data.room;
-    attatchBotMessage({ "data": '{ "message": "Hello! I am Wall-E powered by ChatGPT. How can I help you?", "sender": "bot" }' })
+    attachBotMessage({ "data": '{ "message": "Hello! I am Wall-E powered by ChatGPT. How can I help you?", "sender": "bot" }' });
   })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation:', error);
+  });
+
 connectWebSocket();
 
 function handleYes(e) {
